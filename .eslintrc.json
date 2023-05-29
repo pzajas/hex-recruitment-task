@@ -1,0 +1,55 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "plugin:react/recommended",
+    "standard-with-typescript",
+    "prettier"
+  ],
+  "overrides": [
+    {
+      "files": ["!vite.config.ts"],
+      "excludedFiles": ["vite.config.ts"]
+    }
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "module",
+    "project": ["./tsconfig.json"]
+  },
+  "plugins": ["react", "prettier", "sort-imports-es6-autofix"],
+  "rules": {
+    "sort-imports-es6-autofix/sort-imports-es6": [
+      2,
+      {
+        "ignoreCase": false,
+        "ignoreMemberSort": false,
+        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+      }
+    ],
+
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
+
+    "react/react-in-jsx-scope": "off",
+
+    "@typescript-eslint/strict-boolean-expressions": "warn",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
+    "@typescript-eslint/consistent-type-definitions": "off",
+
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "varsIgnorePattern": ["^completed$", "^value$"],
+        "argsIgnorePattern": ["^completed$", "^value$"]
+      }
+    ]
+  }
+}
