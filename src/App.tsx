@@ -1,5 +1,5 @@
 const App = () => {
-  return <div>Hex Recruitment App</div>;
-};
+  return <div>Hex Recruitment App</div>
+}
 
-export default App;
+export default App
