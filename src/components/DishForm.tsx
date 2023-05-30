@@ -1,10 +1,10 @@
+import { useState } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { dishConfig } from '../variables/arrays'
 import { DishConfig, DishField, CustomFieldValues } from '../typescript/types'
 import { validationSchema } from '../validation/schema'
 import styled from 'styled-components'
-
 import axios from 'axios'
 
 const DishForm = () => {
@@ -12,29 +12,35 @@ const DishForm = () => {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<CustomFieldValues>({
     resolver: yupResolver(validationSchema),
   })
 
+  const [preparationTime, setPreparationTime] = useState('')
+
+  const handlePreparationTimeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const inputText = event.target.value.replace(/:/g, '')
+    const formattedTime = inputText.slice(0, 6).replace(/(\d{2})(?=\d)/g, '$1:')
+    setPreparationTime(formattedTime)
+  }
+
   const onSubmit: SubmitHandler<CustomFieldValues> = async (data) => {
     try {
-      const response = await axios.post(
+      await axios.post(
         'https://umzzcc503l.execute-api.us-west-2.amazonaws.com/dishes/',
         data
       )
-      console.log(response)
+      setPreparationTime('')
+      reset()
     } catch (error) {
       if (error.response) {
-        const { data: responseData } = error.response
-        // Validate errors from API response
-        Object.keys(responseData).forEach((fieldName: string) => {
-          const fieldError = responseData[fieldName]
-          errors[fieldName] = {
-            type: 'api',
-            message: fieldError,
-          }
-        })
+        alert(
+          `Error ${error.response.status} : Something went wrong. Please double check if the form is filled in the right way!`
+        )
       } else {
         console.log(error.message)
       }
@@ -56,18 +62,24 @@ const DishForm = () => {
           placeholder="Name of the dish"
           autoComplete="off"
         />
-        {errors.name && <span>{errors.name.message}</span>}
+        {errors.name && (
+          <StyledErrorMessage>{errors.name.message}</StyledErrorMessage>
+        )}
       </StyledInputWrapper>
 
       <StyledInputWrapper>
         <StyledLabel>Preparation Time</StyledLabel>
         <StyledInput
           {...register('preparation_time')}
+          value={preparationTime}
+          onChange={handlePreparationTimeChange}
           placeholder="HH:MM:SS"
           autoComplete="off"
         />
         {errors.preparation_time && (
-          <span>{errors.preparation_time.message}</span>
+          <StyledErrorMessage>
+            {errors.preparation_time.message}
+          </StyledErrorMessage>
         )}
       </StyledInputWrapper>
 
@@ -79,7 +91,9 @@ const DishForm = () => {
           <option value="soup">Soup</option>
           <option value="sandwich">Sandwich</option>
         </StyledSelect>
-        {errors.type && <span>{errors.type.message}</span>}
+        {errors.type && (
+          <StyledErrorMessage>{errors.type.message}</StyledErrorMessage>
+        )}
       </StyledInputWrapper>
 
       {currentDishConfig &&
@@ -92,7 +106,11 @@ const DishForm = () => {
               step={field.step}
               placeholder={field.placeholder}
             />
-            {errors[field.name] && <span>{errors[field.name].message}</span>}
+            {errors[field.name] && (
+              <StyledErrorMessage>
+                {errors[field.name].message}
+              </StyledErrorMessage>
+            )}
           </StyledSelectWrapper>
         ))}
 
@@ -109,6 +127,12 @@ const StyledFormWrapper = styled.form`
   padding: 2rem;
 `
 
+const StyledErrorMessage = styled.span`
+  font-size: 0.8rem;
+  color: red;
+  position: absolute;
+`
+
 const StyledInputWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -123,6 +147,7 @@ const StyledInput = styled.input`
   padding: 0.2rem 0.5rem;
   margin-bottom: 1rem;
   font-size: 1rem;
+  position: relative;
 
   background-color: #252525;
 
@@ -146,10 +171,11 @@ const StyledSelect = styled.select`
 `
 
 const StyledLabel = styled.label`
-  font-size: 0.6rem;
+  font-size: 0.8rem;
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
+  color: #909090;
 `
 
 const StyledButton = styled.button`
