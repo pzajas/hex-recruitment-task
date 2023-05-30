@@ -5,15 +5,23 @@ export const dishConfig = [
       {
         name: 'no_of_slices',
         label: 'Number of Slices',
+        placeholder: '8 slices',
         type: 'number',
-        validation: { required: true },
+        validation: {
+          required: true,
+          min: 2,
+        },
       },
       {
         name: 'diameter',
         label: 'Diameter',
+        placeholder: '20 cm',
         type: 'number',
-        step: '0.01',
-        validation: { required: true },
+        step: '5',
+        validation: {
+          required: true,
+          min: 20,
+        },
       },
     ],
   },
@@ -23,8 +31,13 @@ export const dishConfig = [
       {
         name: 'spiciness_scale',
         label: 'Spiciness Scale',
+        placeholder: '1-10',
         type: 'number',
-        validation: { required: true, min: 1, max: 10 },
+        validation: {
+          required: true,
+          min: 1,
+          max: 10,
+        },
       },
     ],
   },
@@ -34,8 +47,12 @@ export const dishConfig = [
       {
         name: 'slices_of_bread',
         label: 'Slices of Bread',
+        placeholder: 'min 1',
         type: 'number',
-        validation: { required: true },
+        validation: {
+          required: true,
+          min: 1,
+        },
       },
     ],
   },
